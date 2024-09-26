@@ -1,8 +1,9 @@
-import { useState } from "react";
 import { connect } from "react-redux";
 import { decrement, increment } from "../redux/counter/actions";
+import { dincrement , ddecrement } from "../redux/dynamicCounter/actions";
 
-export function Counter({count , increment , decrement}) {
+export function VariableCounter({count , increment , decrement}) {
+
 
     return (
         <div className="p-4 h-auto flex flex-col items-center justify-center space-y-5 bg-white rounded shadow">
@@ -26,17 +27,22 @@ export function Counter({count , increment , decrement}) {
 }
 
 const mapStateToProps = (state , ownProps) => {
-    console.log(ownProps);
     return {
-        count : state.value
+        count : ownProps.dynamic 
+        ? state.dynamicCounter.value 
+        : state.counter.value 
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch , ownProps) => {
     return{
-        increment :(value) => dispatch(increment(value)) , 
-        decrement :(value) => dispatch(decrement(value)) ,
+        increment : ownProps.dynamic 
+        ? (value) => dispatch(dincrement(value)) 
+        : () => dispatch(increment()) , 
+        decrement :ownProps.dynamic 
+        ? (value) => dispatch(ddecrement(value))  
+        : () => dispatch(decrement()) ,
     }
 }
 
-export default connect(mapStateToProps , mapDispatchToProps)(Counter) ; 
+export default connect(mapStateToProps , mapDispatchToProps)(VariableCounter) ; 
